@@ -94,6 +94,15 @@
   .grid .panel:nth-child(2){animation-delay:.06s}
   .capture{animation-delay:.12s}
 </style>
+<!-- MailerLite Universal -->
+<script>
+    (function(w,d,e,u,f,l,n){w[f]=w[f]||function(){(w[f].q=w[f].q||[])
+    .push(arguments);},l=d.createElement(e),l.async=1,l.src=u,
+    n=d.getElementsByTagName(e)[0],n.parentNode.insertBefore(l,n);})
+    (window,document,'script','https://assets.mailerlite.com/js/universal.js','ml');
+    ml('account', '2419475');
+</script>
+<!-- End MailerLite Universal -->
 </head>
 <body>
 <div class="wrap">
@@ -177,11 +186,8 @@
   <div class="capture">
     <h3>Chcesz pełną projekcję rok po roku — i więcej takich narzędzi?</h3>
     <p>Zostaw e-mail, a wyślę Ci rozpisaną tabelę tej symulacji oraz powiadomienia o nowych kalkulatorach i analizach z kanału.</p>
-    <form id="lead">
-      <input type="email" id="email" placeholder="Twój adres e-mail" required>
-      <button type="submit">Wyślij mi projekcję</button>
-    </form>
-    <div class="ok" id="ok">✓ Dzięki! Sprawdź skrzynkę (i folder oferty/spam).</div>
+    <!-- Formularz MailerLite (natywny — obsługuje zapis, walidację i potwierdzenie) -->
+    <div class="ml-embedded" data-form="mWiu8R"></div>
     <p class="micro">Bez spamu. Możesz wypisać się w każdej chwili.</p>
   </div>
 
@@ -265,52 +271,6 @@ function draw(pts){
 }
 
 document.querySelectorAll('input[type=number]').forEach(el=>el.addEventListener('input',calc));
-
-/* ============================================================
-   >>> TUTAJ PODŁĄCZASZ MAILERLITE <<<
-   ------------------------------------------------------------
-   Masz DWIE opcje. Wybierz JEDNĄ.
-
-   ── OPCJA A (najprostsza): wklej gotowy formularz z MailerLite ──
-   1. W MailerLite: Forms → Embedded form → stwórz formularz.
-   2. Kliknij "Copy HTML" / "Embed code" — dostaniesz kawałek kodu.
-   3. W TYM PLIKU usuń cały blok <form id="lead">...</form>
-      (jest wyżej, w sekcji <!-- EMAIL CAPTURE -->)
-      i w jego miejsce wklej skopiowany kod z MailerLite.
-   4. Wtedy PONIŻSZY skrypt (od $('lead')... do }) możesz usunąć,
-      bo MailerLite obsłuży zapis sam.
-
-   ── OPCJA B: zostaw ten ładny formularz, podłącz przez akcję ──
-   1. W MailerLite stwórz formularz i znajdź jego URL "action"
-      (w kodzie embed jest atrybut action="https://..." ).
-   2. Wstaw ten URL poniżej w miejsce TWOJ_MAILERLITE_ACTION_URL.
-   3. Gotowe — formularz wyśle e-mail do MailerLite.
-   ============================================================ */
-
-const MAILERLITE_ACTION_URL = "https://assets.mailerlite.com/jsonp/2419475/forms/189793460350354473/subscribe"; // podłączone do MailerLite
-
-$('lead').addEventListener('submit',e=>{
-  e.preventDefault();
-  const mail=$('email').value.trim();
-  if(!mail) return;
-
-  if(MAILERLITE_ACTION_URL){
-    // Wysyłka do MailerLite (zachowujemy własny wygląd formularza)
-    const data=new URLSearchParams();
-    data.append('fields[email]', mail);
-    data.append('ml-submit','1');
-    data.append('anticsrf','true');
-    fetch(MAILERLITE_ACTION_URL,{
-      method:'POST', mode:'no-cors',
-      headers:{'Content-Type':'application/x-www-form-urlencoded'},
-      body:data.toString()
-    }).finally(()=>{ $('ok').style.display='block'; $('lead').reset(); });
-  } else {
-    // Tryb demo (zanim podłączysz MailerLite) — tylko podziękowanie
-    $('ok').style.display='block';
-    $('lead').reset();
-  }
-});
 
 calc();
 </script>
