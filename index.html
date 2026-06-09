@@ -287,7 +287,7 @@ document.querySelectorAll('input[type=number]').forEach(el=>el.addEventListener(
    3. Gotowe — formularz wyśle e-mail do MailerLite.
    ============================================================ */
 
-const MAILERLITE_ACTION_URL = ""; // <-- OPCJA B: wklej tu URL action z MailerLite (zostaw puste, jeśli używasz Opcji A)
+const MAILERLITE_ACTION_URL = "https://assets.mailerlite.com/jsonp/2419475/forms/189793460350354473/subscribe"; // podłączone do MailerLite
 
 $('lead').addEventListener('submit',e=>{
   e.preventDefault();
@@ -295,11 +295,16 @@ $('lead').addEventListener('submit',e=>{
   if(!mail) return;
 
   if(MAILERLITE_ACTION_URL){
-    // OPCJA B — wysyłka do MailerLite
-    fetch(MAILERLITE_ACTION_URL,{method:'POST',mode:'no-cors',
+    // Wysyłka do MailerLite (zachowujemy własny wygląd formularza)
+    const data=new URLSearchParams();
+    data.append('fields[email]', mail);
+    data.append('ml-submit','1');
+    data.append('anticsrf','true');
+    fetch(MAILERLITE_ACTION_URL,{
+      method:'POST', mode:'no-cors',
       headers:{'Content-Type':'application/x-www-form-urlencoded'},
-      body:'fields[email]='+encodeURIComponent(mail)})
-      .finally(()=>{$('ok').style.display='block';$('lead').reset();});
+      body:data.toString()
+    }).finally(()=>{ $('ok').style.display='block'; $('lead').reset(); });
   } else {
     // Tryb demo (zanim podłączysz MailerLite) — tylko podziękowanie
     $('ok').style.display='block';
