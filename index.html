@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kalkulator Procentu Składanego — Procent Składany</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#0F172A; --navy-2:#1C2942; --slate:#64748B; --line:#E7DFCF;
+    --amber:#F59E0B; --amber-deep:#B45309; --green:#15803D;
+    --paper:#FBF8F1; --paper-2:#F4EEE2; --card:#FFFFFF;
+    --shadow:0 1px 2px rgba(15,23,42,.04), 0 8px 30px rgba(15,23,42,.06);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:'Hanken Grotesk',sans-serif;background:var(--paper);color:var(--navy);
+    line-height:1.5;-webkit-font-smoothing:antialiased;
+    background-image:radial-gradient(circle at 12% 8%, rgba(245,158,11,.06), transparent 38%),radial-gradient(circle at 92% 0%, rgba(15,23,42,.05), transparent 30%);
+  }
+  .wrap{max-width:1060px;margin:0 auto;padding:clamp(20px,4vw,52px) clamp(16px,4vw,40px)}
+  /* header */
+  .brand{display:flex;align-items:center;gap:12px;margin-bottom:34px}
+  .logo{width:46px;height:46px;border-radius:11px;background:var(--navy);display:grid;place-items:center;color:var(--amber);font-family:'Fraunces',serif;font-weight:700;font-size:20px;letter-spacing:-1px}
+  .brand-txt b{font-family:'Hanken Grotesk';font-weight:700;font-size:14px;letter-spacing:.14em;text-transform:uppercase;color:var(--navy);display:block;line-height:1.15}
+  .brand-txt span{font-size:12.5px;color:var(--slate)}
+  .eyebrow{font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--amber-deep);font-weight:600;margin-bottom:12px}
+  h1{font-family:'Fraunces',serif;font-weight:600;font-size:clamp(30px,5vw,52px);line-height:1.04;letter-spacing:-.02em;max-width:14ch}
+  h1 em{font-style:italic;color:var(--amber-deep)}
+  .lede{margin-top:16px;font-size:clamp(15px,1.6vw,18px);color:var(--slate);max-width:54ch}
+  /* layout */
+  .grid{display:grid;grid-template-columns:1fr;gap:22px;margin-top:38px}
+  @media(min-width:860px){.grid{grid-template-columns:380px 1fr;align-items:start}}
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow)}
+  .panel-pad{padding:clamp(20px,3vw,28px)}
+  .panel h2{font-family:'Fraunces',serif;font-weight:600;font-size:19px;margin-bottom:4px}
+  .panel .sub{font-size:13px;color:var(--slate);margin-bottom:20px}
+  /* fields */
+  .field{margin-bottom:17px}
+  .field label{display:flex;justify-content:space-between;align-items:baseline;font-size:13.5px;font-weight:600;margin-bottom:7px}
+  .field label .hint{font-weight:400;color:var(--slate);font-size:12px}
+  .inputbox{position:relative;display:flex;align-items:center}
+  .inputbox input{width:100%;font-family:'Hanken Grotesk';font-size:16px;font-weight:600;color:var(--navy);background:var(--paper);border:1.5px solid var(--line);border-radius:11px;padding:12px 40px 12px 14px;transition:border-color .15s, box-shadow .15s}
+  .inputbox input:focus{outline:none;border-color:var(--amber);box-shadow:0 0 0 3px rgba(245,158,11,.16)}
+  .inputbox .unit{position:absolute;right:14px;font-size:13px;color:var(--slate);font-weight:600;pointer-events:none}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  /* toggles */
+  .toggle{display:flex;align-items:center;justify-content:space-between;padding:11px 14px;background:var(--paper);border:1.5px solid var(--line);border-radius:11px;margin-bottom:11px;cursor:pointer;user-select:none}
+  .toggle span{font-size:13.5px;font-weight:600}
+  .switch{width:42px;height:24px;border-radius:99px;background:#D8D0BF;position:relative;transition:background .18s;flex:none}
+  .switch::after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#fff;transition:transform .18s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+  .toggle.on .switch{background:var(--green)}
+  .toggle.on .switch::after{transform:translateX(18px)}
+  /* results */
+  .headline-num{font-family:'Fraunces',serif;font-weight:600;letter-spacing:-.02em;line-height:1}
+  .result-top{display:flex;flex-wrap:wrap;align-items:flex-end;gap:8px 28px;padding-bottom:22px;border-bottom:1px dashed var(--line);margin-bottom:22px}
+  .result-top .big{font-size:clamp(38px,7vw,62px);color:var(--navy)}
+  .result-top .big-lbl{font-size:13px;color:var(--slate);font-weight:600;margin-bottom:8px;letter-spacing:.02em}
+  .pill{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--green);background:rgba(21,128,61,.09);padding:5px 11px;border-radius:99px;margin-bottom:10px}
+  .stats{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(min-width:560px){.stats{grid-template-columns:repeat(4,1fr)}}
+  .stat .k{font-size:12px;color:var(--slate);font-weight:600;margin-bottom:5px;letter-spacing:.02em}
+  .stat .v{font-family:'Fraunces',serif;font-size:23px;font-weight:600;letter-spacing:-.01em}
+  .stat .v.amber{color:var(--amber-deep)} .stat .v.green{color:var(--green)}
+  /* chart */
+  .chart-wrap{margin-top:26px}
+  .chart-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px}
+  .chart-head h3{font-family:'Fraunces',serif;font-size:16px;font-weight:600}
+  .legend{display:flex;gap:16px;font-size:12px;color:var(--slate);font-weight:600}
+  .legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:middle}
+  canvas{width:100%;height:auto;display:block}
+  /* email capture */
+  .capture{margin-top:22px;background:linear-gradient(135deg,var(--navy),var(--navy-2));border-radius:18px;padding:clamp(22px,3.2vw,32px);color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden}
+  .capture::before{content:"";position:absolute;right:-40px;top:-40px;width:180px;height:180px;border-radius:50%;background:radial-gradient(circle,rgba(245,158,11,.25),transparent 70%)}
+  .capture h3{font-family:'Fraunces',serif;font-weight:600;font-size:clamp(20px,2.6vw,26px);max-width:22ch;position:relative}
+  .capture p{color:#C7D0DF;font-size:14px;margin-top:8px;max-width:46ch;position:relative}
+  .capture form{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap;position:relative}
+  .capture input{flex:1;min-width:200px;font-family:'Hanken Grotesk';font-size:15px;padding:13px 16px;border-radius:11px;border:1.5px solid rgba(255,255,255,.18);background:rgba(255,255,255,.07);color:#fff}
+  .capture input::placeholder{color:#94A3B8}
+  .capture input:focus{outline:none;border-color:var(--amber);background:rgba(255,255,255,.12)}
+  .capture button{font-family:'Hanken Grotesk';font-weight:700;font-size:15px;padding:13px 24px;border-radius:11px;border:none;background:var(--amber);color:var(--navy);cursor:pointer;transition:transform .12s, background .15s}
+  .capture button:hover{background:var(--amber-soft, #FBBF24);transform:translateY(-1px)}
+  .capture .ok{margin-top:14px;font-size:14px;color:var(--amber);font-weight:600;display:none;position:relative}
+  .capture .micro{font-size:11.5px;color:#7E8AA0;margin-top:12px;position:relative}
+  /* disclaimer + how */
+  .foot{margin-top:26px;font-size:12.5px;color:var(--slate);line-height:1.6}
+  .foot details{margin-top:10px}
+  .foot summary{cursor:pointer;font-weight:600;color:var(--navy)}
+  .foot details p{margin-top:8px}
+  @keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+  .panel,.capture,h1,.lede,.eyebrow{animation:rise .5s both}
+  .grid .panel:nth-child(2){animation-delay:.06s}
+  .capture{animation-delay:.12s}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="brand">
+    <div class="logo">PS</div>
+    <div class="brand-txt"><b>Procent Składany</b><span>Inwestowanie bez hype'u</span></div>
+  </div>
+
+  <p class="eyebrow">Kalkulator śnieżnej kuli</p>
+  <h1>Ile zbudujesz dzięki <em>procentowi składanemu?</em></h1>
+  <p class="lede">Zobacz, jak kapitał, regularne dopłaty i reinwestowane dywidendy pracują razem przez lata. Przesuwaj założenia i obserwuj, jak rośnie Twój portfel.</p>
+
+  <div class="grid">
+    <!-- INPUTS -->
+    <div class="panel panel-pad">
+      <h2>Twoje założenia</h2>
+      <p class="sub">Wpisz własne liczby — wynik przeliczy się od razu.</p>
+
+      <div class="field">
+        <label>Kapitał początkowy</label>
+        <div class="inputbox"><input id="initial" type="number" value="10000" min="0" step="500"><span class="unit">zł</span></div>
+      </div>
+      <div class="field">
+        <label>Miesięczna dopłata</label>
+        <div class="inputbox"><input id="monthly" type="number" value="500" min="0" step="50"><span class="unit">zł</span></div>
+      </div>
+      <div class="row2">
+        <div class="field">
+          <label>Stopa dywidendy</label>
+          <div class="inputbox"><input id="yield" type="number" value="5" min="0" step="0.1"><span class="unit">%</span></div>
+        </div>
+        <div class="field">
+          <label>Wzrost dywidendy <span class="hint">rocznie</span></label>
+          <div class="inputbox"><input id="divg" type="number" value="3" min="0" step="0.5"><span class="unit">%</span></div>
+        </div>
+      </div>
+      <div class="row2">
+        <div class="field">
+          <label>Wzrost kursu <span class="hint">rocznie</span></label>
+          <div class="inputbox"><input id="growth" type="number" value="3" step="0.5"><span class="unit">%</span></div>
+        </div>
+        <div class="field">
+          <label>Liczba lat</label>
+          <div class="inputbox"><input id="years" type="number" value="20" min="1" max="50" step="1"><span class="unit">lat</span></div>
+        </div>
+      </div>
+
+      <div class="toggle on" id="t-reinvest"><span>Reinwestuję dywidendy</span><div class="switch"></div></div>
+      <div class="toggle" id="t-tax"><span>Uwzględnij podatek 19% (Belki)</span><div class="switch"></div></div>
+    </div>
+
+    <!-- RESULTS -->
+    <div class="panel panel-pad">
+      <div class="result-top">
+        <div>
+          <div class="big-lbl">Wartość portfela po <span id="r-years">20</span> latach</div>
+          <div class="headline-num big" id="r-final">—</div>
+        </div>
+        <div class="pill" id="r-pill">▲ <span id="r-multiple">—</span> razy więcej niż wpłaty</div>
+      </div>
+
+      <div class="stats">
+        <div class="stat"><div class="k">Suma wpłat</div><div class="v" id="r-contrib">—</div></div>
+        <div class="stat"><div class="k">Zysk z kursu</div><div class="v amber" id="r-gain">—</div></div>
+        <div class="stat"><div class="k">Dywidendy łącznie</div><div class="v green" id="r-div">—</div></div>
+        <div class="stat"><div class="k">Dochód z dyw. w ost. roku</div><div class="v green" id="r-income">—</div></div>
+      </div>
+
+      <div class="chart-wrap">
+        <div class="chart-head">
+          <h3>Jak rośnie portfel</h3>
+          <div class="legend"><span><i style="background:#CBB994"></i>Twoje wpłaty</span><span><i style="background:var(--amber)"></i>Zyski i dywidendy</span></div>
+        </div>
+        <canvas id="chart" width="1200" height="460" role="img" aria-label="Wykres wzrostu portfela w czasie"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- EMAIL CAPTURE -->
+  <div class="capture">
+    <h3>Chcesz pełną projekcję rok po roku — i więcej takich narzędzi?</h3>
+    <p>Zostaw e-mail, a wyślę Ci rozpisaną tabelę tej symulacji oraz powiadomienia o nowych kalkulatorach i analizach z kanału.</p>
+    <form id="lead">
+      <input type="email" id="email" placeholder="Twój adres e-mail" required>
+      <button type="submit">Wyślij mi projekcję</button>
+    </form>
+    <div class="ok" id="ok">✓ Dzięki! Sprawdź skrzynkę (i folder oferty/spam).</div>
+    <p class="micro">Bez spamu. Możesz wypisać się w każdej chwili.</p>
+  </div>
+
+  <div class="foot">
+    <p>Materiał edukacyjny. Wyniki to symulacja oparta na Twoich założeniach — nie są prognozą ani gwarancją. Rzeczywiste stopy zwrotu są zmienne i mogą być ujemne. To nie jest porada inwestycyjna.</p>
+    <details>
+      <summary>Jak liczymy?</summary>
+      <p>Co miesiąc dodajemy dopłatę i naliczamy wzrost kursu (rozłożony miesięcznie). Raz w roku naliczamy dywidendę jako stopę dywidendy od wartości portfela; stopa rośnie co roku o „wzrost dywidendy". Przy włączonej reinwestycji dywidenda wraca do portfela (po ewentualnym podatku 19%); przy wyłączonej — sumuje się jako dochód otrzymany. To uproszczony model do pokazania mechaniki procentu składanego, a nie predykcja konkretnej spółki.</p>
+    </details>
+  </div>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+const fmt=n=>Math.round(n).toLocaleString('pl-PL')+' zł';
+let reinvest=true, tax=false;
+
+function toggle(el,setter){el.addEventListener('click',()=>{el.classList.toggle('on');setter(el.classList.contains('on'));calc();});}
+toggle($('t-reinvest'),v=>reinvest=v);
+toggle($('t-tax'),v=>tax=v);
+
+function project(){
+  const initial=+$('initial').value||0, monthly=+$('monthly').value||0;
+  const yld=(+$('yield').value||0)/100, divg=(+$('divg').value||0)/100;
+  const g=(+$('growth').value||0)/100, years=Math.max(1,Math.min(50,+$('years').value||1));
+  let V=initial, contrib=initial, divTotal=0, lastIncome=0;
+  const pts=[{y:0,v:V,c:contrib}];
+  const taxF=tax?0.81:1;
+  for(let y=1;y<=years;y++){
+    for(let m=0;m<12;m++){V*=(1+g/12);V+=monthly;contrib+=monthly;}
+    const curY=yld*Math.pow(1+divg,y-1);
+    const div=V*curY; lastIncome=div;
+    if(reinvest){V+=div*taxF;divTotal+=div*taxF;} else {divTotal+=div*taxF;}
+    pts.push({y:y,v:V,c:contrib});
+  }
+  return {V,contrib,divTotal,lastIncome,years,pts};
+}
+
+function calc(){
+  const r=project();
+  $('r-years').textContent=r.years;
+  $('r-final').textContent=fmt(r.V);
+  $('r-contrib').textContent=fmt(r.contrib);
+  const gain=Math.max(0,r.V-r.contrib-(reinvest?r.divTotal:0));
+  $('r-gain').textContent=fmt(gain);
+  $('r-div').textContent=fmt(r.divTotal);
+  $('r-income').textContent=fmt(r.lastIncome);
+  const mult=r.contrib>0?(r.V/r.contrib):0;
+  $('r-multiple').textContent=mult.toFixed(1).replace('.',',');
+  draw(r.pts);
+}
+
+function draw(pts){
+  const cv=$('chart'),ctx=cv.getContext('2d');
+  const W=cv.width,H=cv.height,pad={l:8,r:8,t:18,b:28};
+  ctx.clearRect(0,0,W,H);
+  const maxV=Math.max(...pts.map(p=>p.v))*1.08||1;
+  const n=pts.length-1;
+  const X=i=>pad.l+(W-pad.l-pad.r)*(i/n);
+  const Y=v=>H-pad.b-(H-pad.t-pad.b)*(v/maxV);
+  // grid
+  ctx.strokeStyle='#EAE2D2';ctx.lineWidth=1;ctx.fillStyle='#9C9484';ctx.font="500 19px 'Hanken Grotesk',sans-serif";ctx.textAlign='left';
+  for(let k=0;k<=4;k++){const gy=pad.t+(H-pad.t-pad.b)*k/4;ctx.beginPath();ctx.moveTo(pad.l,gy);ctx.lineTo(W-pad.r,gy);ctx.stroke();}
+  // area total (amber)
+  const grad=ctx.createLinearGradient(0,pad.t,0,H-pad.b);
+  grad.addColorStop(0,'rgba(245,158,11,.55)');grad.addColorStop(1,'rgba(245,158,11,.08)');
+  ctx.beginPath();ctx.moveTo(X(0),Y(pts[0].v));
+  pts.forEach((p,i)=>ctx.lineTo(X(i),Y(p.v)));
+  ctx.lineTo(X(n),H-pad.b);ctx.lineTo(X(0),H-pad.b);ctx.closePath();ctx.fillStyle=grad;ctx.fill();
+  // area contributions (sand)
+  ctx.beginPath();ctx.moveTo(X(0),Y(pts[0].c));
+  pts.forEach((p,i)=>ctx.lineTo(X(i),Y(p.c)));
+  ctx.lineTo(X(n),H-pad.b);ctx.lineTo(X(0),H-pad.b);ctx.closePath();ctx.fillStyle='rgba(203,185,148,.85)';ctx.fill();
+  // line total
+  ctx.beginPath();pts.forEach((p,i)=>i?ctx.lineTo(X(i),Y(p.v)):ctx.moveTo(X(i),Y(p.v)));
+  ctx.strokeStyle='#B45309';ctx.lineWidth=3;ctx.lineJoin='round';ctx.stroke();
+  // x labels (every ~5y)
+  ctx.fillStyle='#9C9484';ctx.textAlign='center';ctx.font="600 18px 'Hanken Grotesk',sans-serif";
+  const step=n<=10?2:5;
+  for(let i=0;i<=n;i+=step){ctx.fillText('rok '+pts[i].y,X(i),H-8);}
+}
+
+document.querySelectorAll('input[type=number]').forEach(el=>el.addEventListener('input',calc));
+
+/* ============================================================
+   >>> TUTAJ PODŁĄCZASZ MAILERLITE <<<
+   ------------------------------------------------------------
+   Masz DWIE opcje. Wybierz JEDNĄ.
+
+   ── OPCJA A (najprostsza): wklej gotowy formularz z MailerLite ──
+   1. W MailerLite: Forms → Embedded form → stwórz formularz.
+   2. Kliknij "Copy HTML" / "Embed code" — dostaniesz kawałek kodu.
+   3. W TYM PLIKU usuń cały blok <form id="lead">...</form>
+      (jest wyżej, w sekcji <!-- EMAIL CAPTURE -->)
+      i w jego miejsce wklej skopiowany kod z MailerLite.
+   4. Wtedy PONIŻSZY skrypt (od $('lead')... do }) możesz usunąć,
+      bo MailerLite obsłuży zapis sam.
+
+   ── OPCJA B: zostaw ten ładny formularz, podłącz przez akcję ──
+   1. W MailerLite stwórz formularz i znajdź jego URL "action"
+      (w kodzie embed jest atrybut action="https://..." ).
+   2. Wstaw ten URL poniżej w miejsce TWOJ_MAILERLITE_ACTION_URL.
+   3. Gotowe — formularz wyśle e-mail do MailerLite.
+   ============================================================ */
+
+const MAILERLITE_ACTION_URL = ""; // <-- OPCJA B: wklej tu URL action z MailerLite (zostaw puste, jeśli używasz Opcji A)
+
+$('lead').addEventListener('submit',e=>{
+  e.preventDefault();
+  const mail=$('email').value.trim();
+  if(!mail) return;
+
+  if(MAILERLITE_ACTION_URL){
+    // OPCJA B — wysyłka do MailerLite
+    fetch(MAILERLITE_ACTION_URL,{method:'POST',mode:'no-cors',
+      headers:{'Content-Type':'application/x-www-form-urlencoded'},
+      body:'fields[email]='+encodeURIComponent(mail)})
+      .finally(()=>{$('ok').style.display='block';$('lead').reset();});
+  } else {
+    // Tryb demo (zanim podłączysz MailerLite) — tylko podziękowanie
+    $('ok').style.display='block';
+    $('lead').reset();
+  }
+});
+
+calc();
+</script>
+</body>
+</html>
